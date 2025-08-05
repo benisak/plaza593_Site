@@ -29,7 +29,7 @@ export default function Post(props) {
   const [hasQueryParamVerified, setHasQueryParamVerified] = useState(false);
 
   // WhatsApp configuration
-  const whatsappNumber = "573004631759"; // Replace with your actual WhatsApp number (with country code, no + sign)
+  const whatsappNumber = "593998525463"; // Replace with your actual WhatsApp number (with country code, no + sign)
   const whatsappMessage = `Hola! Estoy interesado en ${post?.title || 'este producto'}`;
 
   // No Scroll Effect - Efficient for both desktop and mobile

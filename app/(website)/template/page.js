@@ -18,7 +18,7 @@ function PageContent() {
   const [hasQueryParamVerified, setHasQueryParamVerified] = useState(false);
   const containerRef = useRef(null);
 
-  const whatsappNumber = "573004631759";
+  const whatsappNumber = "593998525463";
   const whatsappMessage = `Hola! Estoy interesado en ${templateData?.title || 'este producto'}`;
 
   const handleReady = (data, verified) => {
