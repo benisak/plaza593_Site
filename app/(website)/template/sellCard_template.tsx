@@ -49,13 +49,6 @@ const SellCard: React.FC<SellCardProps> = ({ price = "999" }) => {
               </div>
             </div>
 
-            <div className="self-stretch flex flex-col justify-start items-start gap-2">
-              {/* PRICE NOW COMES FROM PROPS */}
-              <div className="text-black text-4xl font-bold font-nunito">{formatPrice(price)}</div>
-              <div className="text-black text-base font-semibold ">
-                o en 3 cuotas de {calculateInstallment(price)} 0% interés
-              </div>
-            </div>
           </div>
 
           <div className="self-stretch pr-3.5 py-2 rounded-lg flex flex-col justify-start items-start gap-2">
@@ -134,13 +127,6 @@ const SellCard: React.FC<SellCardProps> = ({ price = "999" }) => {
               </div>
             </div>
 
-            <div className="self-stretch flex flex-col justify-start items-start gap-2">
-              {/* PRICE NOW COMES FROM PROPS - MOBILE VERSION */}
-              <div className="text-black text-4xl font-bold font-nunito">{formatPrice(price)}</div>
-              <div className="text-black text-base font-semibold ">
-                o en 3 cuotas de {calculateInstallment(price)} 0% interés
-              </div>
-            </div>
           </div>
 
           <div className="self-stretch pr-3.5 py-2 rounded-lg flex flex-col justify-start items-start gap-2">

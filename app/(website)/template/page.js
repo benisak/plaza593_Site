@@ -26,76 +26,6 @@ function PageContent() {
     setHasQueryParamVerified(verified);
   };
 
-  // 🔒 Disable scroll on mount
-  useEffect(() => {
-    const scrollY = window.scrollY;
-    const scrollX = window.scrollX;
-
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${scrollY}px`;
-    document.body.style.left = `-${scrollX}px`;
-    document.body.style.width = '100%';
-    document.body.style.height = '100%';
-    document.body.style.overflow = 'hidden';
-
-    const preventTouchMove = (e) => e.preventDefault();
-    document.addEventListener('touchmove', preventTouchMove, { passive: false });
-    document.addEventListener('wheel', preventTouchMove, { passive: false });
-
-    return () => {
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.left = '';
-      document.body.style.width = '';
-      document.body.style.height = '';
-      document.body.style.overflow = '';
-
-      document.removeEventListener('touchmove', preventTouchMove);
-      document.removeEventListener('wheel', preventTouchMove);
-      window.scrollTo(scrollX, scrollY);
-    };
-  }, []);
-
-  // Redirect all clicks to WhatsApp except interactive elements
-  useEffect(() => {
-    const hasRedirected = { current: false }; // Local mutable state
-
-    const handleClickOrKey = (e) => {
-      if (hasRedirected.current) return;
-
-      const excludedSelectors = [
-        'a', 'button', 'input', 'textarea', 'select',
-        '[tabindex]', '[role="button"]', '.prose a'
-      ];
-
-      const isExcluded = excludedSelectors.some(selector => e.target.closest(selector));
-      if (!isExcluded) {
-        hasRedirected.current = true;
-
-        // Remove listeners immediately after first trigger
-        document.removeEventListener('click', handleClickOrKey);
-        document.removeEventListener('keydown', handleKeyDown);
-
-        const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
-        window.open(url, '_blank');
-      }
-    };
-
-    const handleKeyDown = (e) => {
-      if ((e.key === 'Enter' || e.key === ' ') && !hasRedirected.current) {
-        handleClickOrKey(e);
-      }
-    };
-
-    document.addEventListener('click', handleClickOrKey);
-    document.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.removeEventListener('click', handleClickOrKey);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [whatsappNumber, whatsappMessage]);
-
   const renderPortableText = (content) => {
     return content.map((block, index) => {
       if (block.listItem === "bullet") {
@@ -116,14 +46,6 @@ function PageContent() {
   if (!templateData) {
     return (
       <>
-        {/* Full page overlay */}
-        <div 
-          className="fixed inset-0 pointer-events-none"
-          style={{ 
-            backgroundColor: 'rgba(80, 80, 80, 0.45)',
-            zIndex: 5
-          }}
-        />
         <Container className="relative">
           <div className="flex items-center justify-center min-h-[400px]">
             <p className="text-lg">Cargando...</p>
@@ -136,15 +58,6 @@ function PageContent() {
 
   return (
     <>
-      {/* FULL PAGE GREY OVERLAY - Covers entire viewport */}
-      <div 
-        className="fixed inset-0 pointer-events-none"
-        style={{ 
-          backgroundColor: 'rgba(80, 80, 80, 0.45)', // More visible grey with 25% opacity
-          zIndex: 5 // Low z-index so content appears above
-        }}
-      />
-
       <TemplateClient onReady={handleReady} />
 
       <Container ref={containerRef} className="relative">
@@ -196,18 +109,30 @@ function PageContent() {
                 </div>
               </div>
 
+              {/* Description below image */}
+              {templateData.description && (
+                <div className="w-full mt-4 md:mt-6">
+                  <p 
+                    style={{
+                      color: "var(--Black-400, #4B4B4B)",
+                      fontSize: "16px",
+                      fontStyle: "normal",
+                      fontWeight: "400",
+                      lineHeight: "24px"
+                    }}
+                    className="w-full text-left"
+                  >
+                    {templateData.description}
+                  </p>
+                </div>
+              )}
+
               <div className="block sm:hidden mt-8">
                 <SellCard price={templateData.price} />
               </div>
               <div className="block sm:hidden mt-8">
               
               </div>
-
-              <article className="prose mb-3 mt-6 w-full break-words dark:prose-invert prose-a:text-blue-600 md:mt-11">
-                <div>
-                  {renderPortableText(templateData.body)}
-                </div>
-              </article>
             </div>
 
             {hasQueryParamVerified && (
@@ -307,14 +232,6 @@ export default function TemplatePage() {
   return (
     <Suspense fallback={
       <>
-        {/* Full page overlay for loading state too */}
-        <div 
-          className="fixed inset-0 pointer-events-none"
-          style={{ 
-            backgroundColor: 'rgba(80, 80, 80, 0.45)',
-            zIndex: 5
-          }}
-        />
         <Container className="relative">
           <div className="flex items-center justify-center min-h-[400px]">
             <p className="text-lg">Cargando...</p>

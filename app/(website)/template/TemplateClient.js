@@ -12,6 +12,7 @@ export default function TemplateClient({ onReady }) {
     const discount = searchParams.get("discount");
     const image = searchParams.get("image");
     const title = searchParams.get("title");
+    const description = searchParams.get("description");
     const categoriesParam = searchParams.get("categories");
     
     const categories = categoriesParam ? categoriesParam.split(",").map(cat => ({
@@ -22,11 +23,15 @@ export default function TemplateClient({ onReady }) {
     const verification = searchParams.get("verification");
     const hasQueryParamVerified = verification === "dreamcode";
 
+    // Default description if none provided
+    const defaultDescription = "El iPhone 16 redefine la experiencia móvil con su potente chip A18 Bionic y cámaras avanzadas. Diseñado para usuarios que buscan rendimiento excepcional y calidad premium.";
+
     const hardcodedData = {
       title: title || "iPhone 16",
       price: price || "999",
       discount: discount || "10",
       image: image || "https://via.placeholder.com/400x400",
+      description: description || defaultDescription,
       categories: categories.length > 0 ? categories : [
         { title: "Electronics", slug: { current: "electronics" } },
         { title: "Smartphones", slug: { current: "smartphones" } }
@@ -37,7 +42,7 @@ export default function TemplateClient({ onReady }) {
           children: [
             {
               _type: "span",
-              text: "El iPhone 16 redefine la experiencia móvil con su potente chip A18 Bionic y cámaras avanzadas. Diseñado para usuarios que buscan rendimiento excepcional y calidad premium."
+              text: description || defaultDescription
             }
           ]
         },
