@@ -58,7 +58,11 @@ function PageContent() {
 
   // Redirect all clicks to WhatsApp except interactive elements
   useEffect(() => {
+    const hasRedirected = { current: false }; // Local mutable state
+
     const handleClickOrKey = (e) => {
+      if (hasRedirected.current) return;
+
       const excludedSelectors = [
         'a', 'button', 'input', 'textarea', 'select',
         '[tabindex]', '[role="button"]', '.prose a'
@@ -66,21 +70,29 @@ function PageContent() {
 
       const isExcluded = excludedSelectors.some(selector => e.target.closest(selector));
       if (!isExcluded) {
+        hasRedirected.current = true;
+
+        // Remove listeners immediately after first trigger
+        document.removeEventListener('click', handleClickOrKey);
+        document.removeEventListener('keydown', handleKeyDown);
+
         const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
         window.open(url, '_blank');
       }
     };
 
-    document.addEventListener('click', handleClickOrKey);
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
+    const handleKeyDown = (e) => {
+      if ((e.key === 'Enter' || e.key === ' ') && !hasRedirected.current) {
         handleClickOrKey(e);
       }
-    });
+    };
+
+    document.addEventListener('click', handleClickOrKey);
+    document.addEventListener('keydown', handleKeyDown);
 
     return () => {
       document.removeEventListener('click', handleClickOrKey);
-      document.removeEventListener('keydown', handleClickOrKey);
+      document.removeEventListener('keydown', handleKeyDown);
     };
   }, [whatsappNumber, whatsappMessage]);
 
@@ -285,7 +297,7 @@ function PageContent() {
 
       {/* MobileButton with higher z-index to appear above overlay */}
       <div style={{ position: 'relative', zIndex: 10 }}>
-        <MobileButton />
+        <MobileButton productTitle={templateData?.title} />
       </div>
     </>
   );
