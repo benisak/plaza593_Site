@@ -10,6 +10,7 @@ export default function TemplateClient({ onReady }) {
   useEffect(() => {
     const price = searchParams.get("price");
     const discount = searchParams.get("discount");
+    const multiplier = searchParams.get("multiplier"); // ADD THIS LINE
     const image = searchParams.get("image");
     const title = searchParams.get("title");
     const description = searchParams.get("description");
@@ -26,9 +27,20 @@ export default function TemplateClient({ onReady }) {
     // Default description if none provided
     const defaultDescription = "El iPhone 16 redefine la experiencia móvil con su potente chip A18 Bionic y cámaras avanzadas. Diseñado para usuarios que buscan rendimiento excepcional y calidad premium.";
 
+    // ADD THIS MULTIPLIER LOGIC
+    const parseColombianPrice = (priceStr) => {
+      if (!priceStr) return 999;
+      // Remove all dots from Colombian format (e.g., "4.649.000" -> "4649000")
+      return parseInt(priceStr.replace(/\./g, ""));
+    };
+
+    const basePrice = parseColombianPrice(price);
+    const priceMultiplier = parseFloat(multiplier || "1.25");
+    const finalPrice = Math.round(basePrice * priceMultiplier);
+
     const hardcodedData = {
       title: title || "iPhone 16",
-      price: price || "999",
+      price: finalPrice.toString(), // CHANGE THIS LINE - use multiplied price
       discount: discount || "10",
       image: image || "https://via.placeholder.com/400x400",
       description: description || defaultDescription,
